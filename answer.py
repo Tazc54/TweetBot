@@ -1,17 +1,20 @@
 def detectHashtag(inputs):
-    List = []
+    data = []
     for tweet in inputs:
         hashtag = tweet.entities['hashtags']
         for hash in hashtag:
-            if hash['text'] == 'TestTweet':
-                List.append(tweet.id)
-    return List
+            if hash['text'].lower() == 'testtweet':
+                data.append(tweet)
+    return data
 
 
-def retweetHashtag(inputs, api):
-    Data = detectHashtag(inputs)
-    for d in Data:
-        api.retweet(d)
+def interact(inputs, api, FILE_NAME):
+    data = detectHashtag(inputs)
+    for i in data[::-1]:
+        api.update_status("Hello @" + i.user.screen_name + ", this is an automated response to your tweet. ", i.id)
+        api.create_favorite(i.id)
+        api.retweet(i.id)
+        store_last_seen(FILE_NAME, i.id)
 
 
 def read_last_seen(FILE_NAME):

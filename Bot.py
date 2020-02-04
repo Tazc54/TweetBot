@@ -1,17 +1,17 @@
 import tweepy
-from answer import retweetHashtag, read_last_seen, store_last_seen
+import time
+from answer import read_last_seen, interact
 
-consumer_key = 'Your Key'
-consumer_secret = 'your secret'
+consumer_key = 'your key'
+consumer_secret = 'your secret key'
 access_token = 'your token'
-access_token_secret = 'your token secret'
-
+access_token_secret = 'your secret token'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
-
-api = tweepy.API(auth)
-tweets = api.mentions_timeline()
-
-#retweetHashtag(tweets, api)
-
+while True:
+    FILE_NAME = 'last_seen.txt'
+    api = tweepy.API(auth)
+    tweets = api.mentions_timeline(read_last_seen(FILE_NAME), tweet_mode='extended')
+    interact(tweets, api, FILE_NAME)
+    time.sleep(120)
